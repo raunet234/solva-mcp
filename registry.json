@@ -1,0 +1,38 @@
+[
+  {
+    "id": "news-xlm402",
+    "name": "XLM News Wire",
+    "category": "news",
+    "url": "https://mock-news.agentpay.dev/query",
+    "priceUSDC": 0.002,
+    "uptimePct": 99.2,
+    "totalPayments": 1400
+  },
+  {
+    "id": "search-deepquery",
+    "name": "DeepQuery Search",
+    "category": "search",
+    "url": "https://mock-search.agentpay.dev/query",
+    "priceUSDC": 0.003,
+    "uptimePct": 98.5,
+    "totalPayments": 750
+  },
+  {
+    "id": "summarize-brevity",
+    "name": "Brevity Summarizer",
+    "category": "summarize",
+    "url": "https://mock-summarize.agentpay.dev/query",
+    "priceUSDC": 0.001,
+    "uptimePct": 97.8,
+    "totalPayments": 180
+  },
+  {
+    "id": "weather-skyvault",
+    "name": "SkyVault Weather",
+    "category": "weather",
+    "url": "https://mock-weather.agentpay.dev/query",
+    "priceUSDC": 0.004,
+    "uptimePct": 95.5,
+    "totalPayments": 45
+  }
+]

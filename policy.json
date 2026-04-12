@@ -1,0 +1,7 @@
+{
+  "maxPriceUSDC": 0.005,
+  "minUptimePct": 97.0,
+  "minTotalPayments": 100,
+  "dailyBudgetUSDC": 2.0,
+  "allowExplorer": false
+}
