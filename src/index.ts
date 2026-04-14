@@ -65,8 +65,25 @@ async function main(): Promise<void> {
         const candidates = filterAndSort(registry, category, policy);
 
         if (candidates.length === 0) {
+          const allInCategory = registry.filter((s) => s.category === category);
+          let reason = `No policy-compliant service found for "${task}" (category: ${category}).\n\n`;
+
+          if (allInCategory.length === 0) {
+            reason += `No services registered for the "${category}" category.`;
+          } else {
+            reason += `Found ${allInCategory.length} service(s) in "${category}" category, but none passed the policy:\n`;
+            reason += `Policy requires: max price $${policy.maxPriceUSDC}, min uptime ${policy.minUptimePct}%, min payments ${policy.minTotalPayments}\n\n`;
+            for (const s of allInCategory) {
+              const fails: string[] = [];
+              if (s.priceUSDC > policy.maxPriceUSDC) fails.push(`price $${s.priceUSDC} > max $${policy.maxPriceUSDC}`);
+              if (s.uptimePct < policy.minUptimePct) fails.push(`uptime ${s.uptimePct}% < min ${policy.minUptimePct}%`);
+              if (s.totalPayments < policy.minTotalPayments) fails.push(`payments ${s.totalPayments} < min ${policy.minTotalPayments}`);
+              reason += `• ${s.name}: REJECTED — ${fails.join(", ")}\n`;
+            }
+          }
+
           return {
-            content: [{ type: "text", text: `Error: No policy-compliant service found for: ${task}` }],
+            content: [{ type: "text", text: reason }],
           };
         }
 
@@ -96,7 +113,7 @@ async function main(): Promise<void> {
         // Step 4 — Service call (mock or real)
         let result: string;
         if (isMockUrl(service.url)) {
-          result = getMockResult(category);
+          result = getMockResult(category, task);
         } else {
           const serviceResponse = await fetch(service.url);
           result = await serviceResponse.text();

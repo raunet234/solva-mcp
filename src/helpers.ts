@@ -76,29 +76,31 @@ export function filterAndSort(services: Service[], category: Category, policy: P
     .sort((a, b) => a.priceUSDC - b.priceUSDC);
 }
 
-export function getMockResult(category: Category): string {
+export function getMockResult(category: Category, task: string): string {
+  const topic = task.replace(/^(find|get|search|summarize|research|look up|tell me about)\s*/i, "").trim() || "the requested topic";
+
   switch (category) {
     case "news":
       return [
-        "Top stories:",
-        "1. \"Stellar Network Hits 10M Daily Transactions\" — CoinDesk, April 12 2026",
-        "2. \"x402 Protocol Sees 300% Growth in Agent Micropayments\" — The Block, April 11 2026",
-        "3. \"Soroban Smart Contracts Now Power 40% of DeFi Volume on Stellar\" — Decrypt, April 10 2026",
+        `Top stories for "${topic}":`,
+        `1. "Major Developments in ${topic} Reshape Industry Outlook" — Reuters, April 12 2026`,
+        `2. "${topic}: New Breakthroughs Drive Record Investment" — Bloomberg, April 11 2026`,
+        `3. "Experts Predict Transformative Year Ahead for ${topic}" — TechCrunch, April 10 2026`,
       ].join("\n");
     case "search":
       return [
-        "Search results:",
-        "1. x402 Payment Protocol Documentation — https://x402.org/docs (official spec and integration guides)",
-        "2. Building AI Agents with Micropayments — https://stellar.org/blog/agents (case studies and architecture patterns)",
-        "3. MCP Server Best Practices — https://modelcontextprotocol.io/guides (tool registration and transport patterns)",
+        `Search results for "${topic}":`,
+        `1. Comprehensive Guide to ${topic} — https://docs.example.com (overview, best practices, and case studies)`,
+        `2. ${topic}: Industry Analysis 2026 — https://research.example.com (market trends and expert insights)`,
+        `3. Getting Started with ${topic} — https://learn.example.com (tutorials and implementation guides)`,
       ].join("\n");
     case "summarize":
       return [
-        "Summary:",
+        `Summary of ${topic}:`,
         "",
-        "The x402 protocol enables autonomous AI agents to make micropayments for web services using HTTP status code 402. When an agent encounters a paywalled resource, it automatically signs a Soroban authorization entry and retries with a valid payment header, settling USDC on the Stellar network in seconds.",
+        `Recent developments in ${topic} have shown significant momentum, with key players investing heavily in infrastructure and adoption. Industry analysts note a shift toward more accessible and scalable solutions, driven by growing demand from both enterprise and consumer markets.`,
         "",
-        "This approach eliminates the need for API keys, subscriptions, or pre-negotiated contracts. Agents can discover, evaluate, and pay for services on demand, enabling a new economy of machine-to-machine commerce where trust is established through on-chain settlement rather than identity verification.",
+        `Looking ahead, the convergence of ${topic} with emerging technologies like AI agents and blockchain-based micropayments is expected to unlock new use cases. Experts predict that autonomous systems capable of discovering and paying for services on demand will become a standard pattern within the next 12-18 months.`,
       ].join("\n");
     case "weather":
       return "Weather: Partly cloudy, 18°C, humidity 62%, wind 12km/h NW";
@@ -115,7 +117,7 @@ export function formatResponse(
   return [
     `✓ Task: ${task}`,
     `✓ Category: ${category}`,
-    `✓ Service: ${service.name} (${service.url})`,
+    `✓ Service: ${service.name}`,
     `✓ Price: $${service.priceUSDC} USDC`,
     `✓ Transaction: ${txHash}`,
     `✓ Explorer: https://stellar.expert/explorer/testnet/tx/${txHash}`,
