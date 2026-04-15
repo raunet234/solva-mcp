@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solva MCP — Autonomous Payments for AI Agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #000000;
+      --card: #111111;
+      --card-border: #1a1a1a;
+      --accent: #7C3AED;
+      --teal: #1D9E75;
+      --text: #ffffff;
+      --muted: #888888;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn-stellar {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .btn-stellar:hover { opacity: 0.9; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 100px 40px; }
+
+    /* ─── HERO ─── */
+    #hero {
+      padding-top: 160px;
+      padding-bottom: 100px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #222;
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+    }
+
+    .hero-heading {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 28px;
+      background: linear-gradient(135deg, #fff 60%, #aaa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-heading .accent {
+      -webkit-text-fill-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1px solid #333;
+      transition: opacity 0.2s;
+    }
+
+    .btn-secondary:hover { opacity: 0.9; }
+
+    /* ─── SCROLLING CARDS ─── */
+    #use-cases {
+      padding: 80px 0;
+    }
+
+    .section-heading {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 48px;
+      padding: 0 40px;
+    }
+
+    .cards-scroll-wrapper {
+      overflow-x: auto;
+      padding: 0 40px 20px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-snap-type: x mandatory;
+    }
+
+    .cards-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+    .cards-row {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+    }
+
+    .use-card {
+      width: 260px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .use-card:hover {
+      border-color: #333;
+      transform: translateY(-2px);
+    }
+
+    .icon-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .use-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .use-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── FEATURES GRID ─── */
+    #features {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: all 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: #333;
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    #how-it-works {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .hiw-card {
+      background: #0d0d0d;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 56px 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .hiw-left h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hiw-left p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .hiw-left a {
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .hiw-left a:hover { text-decoration: underline; }
+
+    .terminal {
+      background: #0a0a0a;
+      border-radius: 12px;
+      padding: 24px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      border: 1px solid #1a1a1a;
+    }
+
+    .t-comment { color: #555; }
+    .t-string { color: var(--accent); }
+    .t-key { color: var(--teal); }
+    .t-value { color: #fff; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 40px;
+      text-align: center;
+      color: #555;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    footer a {
+      color: #555;
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--muted); }
+
+    /* ─── AGENTS CAROUSEL ─── */
+    #agents {
+      padding: 80px 0;
+    }
+
+    .carousel-wrapper {
+      overflow: hidden;
+      position: relative;
+      -webkit-mask: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 16px;
+      animation: scroll 30s linear infinite;
+      width: max-content;
+      padding: 8px 0;
+    }
+
+    .carousel-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .agent-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 180px;
+      color: #000;
+      font-weight: 600;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .carousel-text {
+      text-align: center;
+      padding: 0 40px;
+      margin-top: 48px;
+    }
+
+    .carousel-text h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .carousel-text p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      nav .nav-links { gap: 16px; }
+
+      #hero { padding: 120px 20px 60px; }
+      .hero-heading { font-size: 38px; letter-spacing: -1px; }
+      .hero-sub { font-size: 16px; }
+
+      section { padding: 60px 20px; }
+
+      .features-grid { grid-template-columns: 1fr; }
+
+      .hiw-card {
+        grid-template-columns: 1fr;
+        padding: 32px 24px;
+        gap: 32px;
+      }
+
+      .cards-scroll-wrapper { padding: 0 20px 20px; }
+      footer { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAVBAR ─── -->
+  <nav>
+    <a href="#hero" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 25,8 25,20 14,26 3,20 3,8" fill="none" stroke="#1D9E75" stroke-width="2"/>
+        <polygon points="14,7 21,11 21,19 14,23 7,19 7,11" fill="#1D9E75" opacity="0.3"/>
+      </svg>
+      Solva
+    </a>
+    <div class="nav-links">
+      <a href="https://github.com/raunet234/solva-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="#how-it-works">Docs</a>
+      <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener" class="btn-stellar">View on Stellar</a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <div id="hero">
+    <div class="badge">
+      <span class="dot"></span>
+      Powered by x402 Protocol &amp; Stellar
+    </div>
+    <h1 class="hero-heading">
+      Your agent can now<br>
+      autonomously discover<br>
+      and pay for <span class="accent">services.</span>
+    </h1>
+    <p class="hero-sub">
+      Solva gives AI agents a policy-driven wallet for x402 micropayments on Stellar. No API keys. No subscriptions. Just autonomous payments.
+    </p>
+    <div class="hero-ctas">
+      <a href="demo.html" class="btn-primary">View Live Demo →</a>
+      <a href="https://github.com/raunet234/solva-mcp" target="_blank" rel="noopener" class="btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        GitHub Repository
+      </a>
+    </div>
+  </div>
+
+  <!-- ─── WHAT SOLVA BUYS ─── -->
+  <section id="use-cases">
+    <h2 class="section-heading">What will your agent pay for?</h2>
+    <div class="cards-scroll-wrapper" id="scrollRow">
+      <div class="cards-row">
+        <div class="use-card">
+          <div class="icon-circle" style="background: rgba(29,158,117,0.15);">📰</div>
+          <h3>News APIs</h3>
+          <p>Latest headlines fetched and paid per query. No subscription needed.</p>
+        </div>
+        <div class="use-card">
+          <div class="icon-circle" style="background: rgba(124,58,237,0.15);">🔍</div>
+          <h3>Search Services</h3>
+          <p>Web search results on demand. Agent pays only for what it needs.</p>
+        </div>
+        <div class="use-card">
+          <div class="icon-circle" style="background: rgba(59,130,246,0.15);">⚡</div>
+          <h3>Summarization</h3>
+          <p>Long-form content condensed instantly. Charged per call, not per month.</p>
+        </div>
+        <div class="use-card">
+          <div class="icon-circle" style="background: rgba(245,158,11,0.15);">🌤</div>
+          <h3>Weather Data</h3>
+          <p>Real-time forecasts without a weather API account.</p>
+        </div>
+        <div class="use-card">
+          <div class="icon-circle" style="background: rgba(34,197,94,0.15);">🌐</div>
+          <h3>Any x402 Service</h3>
+          <p>Any HTTP endpoint that accepts x402 payments on Stellar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FEATURES GRID ─── -->
+  <section id="features" style="padding-top: 0;">
+    <h2 class="section-heading">Built for autonomous agents.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(29,158,117,0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2">
+            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3>Policy-Driven Spending</h3>
+        <p>Set max price, uptime threshold, and daily limits. Agents operate within your rules — never beyond them.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(124,58,237,0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </div>
+        <h3>Service Discovery</h3>
+        <p>Agents query Solva's registry instead of hardcoded URLs. Find the right service for any task automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(34,197,94,0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <h3>Real x402 Payments</h3>
+        <p>Every call settles a real USDC micropayment on Stellar testnet. Verifiable on-chain, every time.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(245,158,11,0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3>MCP Native</h3>
+        <p>Works directly inside Claude Code. Type a task — Solva handles discovery, payment, and result delivery.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── AGENTS CAROUSEL ─── -->
+  <section id="agents">
+    <h2 class="section-heading">Works with any agent.</h2>
+    <div class="carousel-wrapper">
+      <div class="carousel-track">
+        <!-- Cards (repeated twice for seamless infinite loop) -->
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <polygon points="16,3 27,9 27,23 16,29 5,23 5,9" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+            <polygon points="16,9 23,13 23,21 16,25 9,21 9,13" fill="#1D9E75" opacity="0.35"/>
+          </svg>
+          Claude Code
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="12" stroke="#000" stroke-width="2.5"/>
+            <circle cx="16" cy="16" r="6" fill="#000"/>
+          </svg>
+          OpenAI Agents
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M8 6L8 22L13 17L17 26L20 24.5L16 15.5L22 15.5Z" fill="#000" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Cursor
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M4 20 Q10 10 16 16 Q22 22 28 12" stroke="#000" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M4 24 Q10 14 16 20 Q22 26 28 16" stroke="#000" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+          </svg>
+          Windsurf
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="9" cy="9" r="3" fill="#000"/><circle cx="16" cy="9" r="3" fill="#000"/><circle cx="23" cy="9" r="3" fill="#000"/>
+            <circle cx="9" cy="16" r="3" fill="#000"/><circle cx="16" cy="16" r="3" fill="#000"/><circle cx="23" cy="16" r="3" fill="#000"/>
+            <circle cx="9" cy="23" r="3" fill="#000"/><circle cx="16" cy="23" r="3" fill="#000"/><circle cx="23" cy="23" r="3" fill="#000"/>
+          </svg>
+          Any MCP Client
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="4" width="24" height="24" rx="4" stroke="#000" stroke-width="2.5" fill="none"/>
+            <rect x="10" y="10" width="12" height="12" rx="2" fill="#000"/>
+          </svg>
+          VS Code + MCP
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="6" width="24" height="20" rx="3" stroke="#000" stroke-width="2" fill="none"/>
+            <path d="M10 14l4 4-4 4" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 22h4" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Cline
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="11" stroke="#000" stroke-width="2.5" fill="none"/>
+            <path d="M16 10v12M11 16l5 5 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Continue.dev
+        </div>
+        <!-- Repeat for seamless loop -->
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <polygon points="16,3 27,9 27,23 16,29 5,23 5,9" fill="none" stroke="#1D9E75" stroke-width="2.5"/>
+            <polygon points="16,9 23,13 23,21 16,25 9,21 9,13" fill="#1D9E75" opacity="0.35"/>
+          </svg>
+          Claude Code
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="12" stroke="#000" stroke-width="2.5"/>
+            <circle cx="16" cy="16" r="6" fill="#000"/>
+          </svg>
+          OpenAI Agents
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M8 6L8 22L13 17L17 26L20 24.5L16 15.5L22 15.5Z" fill="#000" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Cursor
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M4 20 Q10 10 16 16 Q22 22 28 12" stroke="#000" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <path d="M4 24 Q10 14 16 20 Q22 26 28 16" stroke="#000" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+          </svg>
+          Windsurf
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="9" cy="9" r="3" fill="#000"/><circle cx="16" cy="9" r="3" fill="#000"/><circle cx="23" cy="9" r="3" fill="#000"/>
+            <circle cx="9" cy="16" r="3" fill="#000"/><circle cx="16" cy="16" r="3" fill="#000"/><circle cx="23" cy="16" r="3" fill="#000"/>
+            <circle cx="9" cy="23" r="3" fill="#000"/><circle cx="16" cy="23" r="3" fill="#000"/><circle cx="23" cy="23" r="3" fill="#000"/>
+          </svg>
+          Any MCP Client
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="4" width="24" height="24" rx="4" stroke="#000" stroke-width="2.5" fill="none"/>
+            <rect x="10" y="10" width="12" height="12" rx="2" fill="#000"/>
+          </svg>
+          VS Code + MCP
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="6" width="24" height="20" rx="3" stroke="#000" stroke-width="2" fill="none"/>
+            <path d="M10 14l4 4-4 4" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 22h4" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Cline
+        </div>
+        <div class="agent-card">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="11" stroke="#000" stroke-width="2.5" fill="none"/>
+            <path d="M16 10v12M11 16l5 5 5-5" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Continue.dev
+        </div>
+      </div>
+    </div>
+    <div class="carousel-text">
+      <h3>Works with any MCP-compatible agent or IDE.</h3>
+      <p>Claude Code, Cursor, Windsurf, VS Code, or any tool that supports the Model Context Protocol. Configure once — Solva works everywhere.</p>
+    </div>
+  </section>
+
+  <!-- ─── HOW IT WORKS ─── -->
+  <section id="how-it-works">
+    <div class="hiw-card">
+      <div class="hiw-left">
+        <h2>Works with any MCP client.</h2>
+        <p>Solva is not limited to Claude Code. Any agent or IDE that supports the Model Context Protocol can install Solva and start making autonomous x402 payments on Stellar. Configure once, pay anywhere.</p>
+        <a href="https://github.com/raunet234/solva-mcp#readme" target="_blank" rel="noopener">View setup docs →</a>
+      </div>
+      <div class="terminal">
+        <span class="t-comment">// Claude Code</span><br>
+        <span style="color:#1D9E75;">claude mcp add solva -- npx tsx /path/to/solva-mcp/src/index.ts</span><br>
+        <br>
+        <span class="t-comment">// Cursor / Windsurf / VS Code</span><br>
+        <span style="color:#fff;">{</span><br>
+        &nbsp;&nbsp;<span style="color:#7C3AED;">"mcpServers"</span><span style="color:#fff;">: {</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7C3AED;">"solva"</span><span style="color:#fff;">: {</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7C3AED;">"command"</span><span style="color:#fff;">: </span><span style="color:#F59E0B;">"npx"</span><span style="color:#fff;">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7C3AED;">"args"</span><span style="color:#fff;">: [</span><span style="color:#F59E0B;">"tsx"</span><span style="color:#fff;">, </span><span style="color:#F59E0B;">"/path/to/solva-mcp/src/index.ts"</span><span style="color:#fff;">],</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7C3AED;">"env"</span><span style="color:#fff;">: {</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7C3AED;">"STELLAR_SECRET_KEY"</span><span style="color:#fff;">: </span><span style="color:#F59E0B;">"S..."</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fff;">}</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#fff;">}</span><br>
+        &nbsp;&nbsp;<span style="color:#fff;">}</span><br>
+        <span style="color:#fff;">}</span><br>
+        <br>
+        <span class="t-comment">// Then just type your task:</span><br>
+        <span style="color:#F59E0B;">"find me latest news about AI payments"</span><br>
+        <span class="t-comment">// Solva handles discovery + payment automatically</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <p>Solva MCP · Built for Stellar Hacks: Agents Hackathon 2026</p>
+    <p>by Rauneet Raj · Open source under MIT</p>
+    <p style="margin-top: 8px;">
+      <a href="https://github.com/raunet234/solva-mcp" target="_blank" rel="noopener">GitHub →</a>
+    </p>
+  </footer>
+
+  <script>
+    // Horizontal scroll via mouse wheel on the cards row
+    const scrollRow = document.getElementById('scrollRow');
+    scrollRow.addEventListener('wheel', function(e) {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        this.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+  </script>
+
+</body>
+</html>
