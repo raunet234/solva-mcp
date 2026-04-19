@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solva MCP — Documentation</title>
+  <meta name="description" content="Complete documentation for Solva MCP — setup, configuration, usage, and API reference." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#000; --card:#111; --card-border:#1a1a1a; --accent:#7C3AED; --teal:#1D9E75; --amber:#F59E0B; --text:#fff; --muted:#888; --radius:16px; }
+    html { scroll-behavior: smooth; }
+    body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 40px; height:64px; background:rgba(0,0,0,0.8); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--card-border); }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); font-size:18px; font-weight:700; }
+    .nav-links { display:flex; align-items:center; gap:28px; }
+    .nav-links a { color:var(--muted); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--text); }
+    .btn-stellar { background:#fff; color:#000; text-decoration:none; border-radius:999px; padding:8px 20px; font-size:14px; font-weight:600; transition:opacity 0.2s; }
+    .btn-stellar:hover { opacity:0.9; }
+
+    .page-header { padding:140px 40px 60px; text-align:center; max-width:800px; margin:0 auto; }
+    .page-header h1 { font-size:48px; font-weight:800; letter-spacing:-1.5px; margin-bottom:16px; background:linear-gradient(135deg,#fff 60%,#aaa 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page-header p { font-size:17px; color:var(--muted); line-height:1.7; max-width:560px; margin:0 auto; }
+
+    /* Layout */
+    .docs-layout { display:grid; grid-template-columns:220px 1fr; gap:40px; max-width:1100px; margin:0 auto; padding:0 40px 80px; }
+
+    /* Sidebar */
+    .docs-sidebar { position:sticky; top:84px; align-self:start; }
+    .sidebar-group { margin-bottom:28px; }
+    .sidebar-group h4 { font-size:11px; font-weight:600; color:#555; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; }
+    .sidebar-group a { display:block; padding:6px 12px; font-size:13px; color:var(--muted); text-decoration:none; border-radius:8px; transition:all 0.15s; margin-bottom:2px; }
+    .sidebar-group a:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+    .sidebar-group a.active { color:var(--teal); background:rgba(29,158,117,0.08); }
+
+    /* Content */
+    .docs-content { min-width:0; }
+
+    .doc-section { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:36px 32px; margin-bottom:24px; scroll-margin-top:84px; }
+    .doc-section h2 { font-size:24px; font-weight:700; margin-bottom:12px; }
+    .doc-section h3 { font-size:17px; font-weight:600; margin:20px 0 10px; color:var(--text); }
+    .doc-section p { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:12px; }
+    .doc-section ul, .doc-section ol { padding-left:20px; margin-bottom:16px; }
+    .doc-section li { font-size:14px; color:var(--muted); line-height:1.8; }
+    .doc-section code { background:#0a0a0a; padding:2px 8px; border-radius:4px; font-size:13px; color:var(--teal); font-family:monospace; }
+
+    .code-block { background:#0a0a0a; border-radius:12px; padding:20px; font-family:monospace; font-size:13px; line-height:1.9; border:1px solid #1a1a1a; overflow-x:auto; margin:16px 0; color:#ccc; }
+    .c-key { color:var(--teal); } .c-str { color:var(--accent); } .c-num { color:var(--amber); } .c-punct { color:#555; } .c-comment { color:#444; }
+
+    /* Table */
+    .doc-table { width:100%; border-collapse:collapse; margin:16px 0; }
+    .doc-table th { text-align:left; font-size:12px; color:#555; text-transform:uppercase; letter-spacing:0.06em; padding:8px 12px; border-bottom:1px solid #1a1a1a; }
+    .doc-table td { font-size:13px; padding:10px 12px; border-bottom:1px solid #0d0d0d; color:var(--muted); }
+    .doc-table td:first-child { color:var(--text); font-family:monospace; }
+    .doc-table .pass { color:var(--teal); } .doc-table .fail { color:#ef4444; }
+
+    /* Alert */
+    .doc-alert { background:rgba(29,158,117,0.06); border:1px solid rgba(29,158,117,0.2); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:13px; color:var(--muted); line-height:1.6; }
+    .doc-alert strong { color:var(--teal); }
+    .doc-alert-warn { background:rgba(245,158,11,0.06); border-color:rgba(245,158,11,0.2); }
+    .doc-alert-warn strong { color:var(--amber); }
+
+    footer { border-top:1px solid var(--card-border); padding:40px; text-align:center; color:#555; font-size:13px; line-height:2; }
+    footer a { color:#555; text-decoration:none; } footer a:hover { color:var(--muted); }
+
+    @media (max-width:768px) {
+      nav { padding:0 20px; } .nav-links { gap:16px; }
+      .page-header { padding:120px 20px 40px; } .page-header h1 { font-size:32px; }
+      .docs-layout { grid-template-columns:1fr; padding:0 20px 60px; }
+      .docs-sidebar { position:static; display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+      .sidebar-group { margin-bottom:0; }
+      .doc-section { padding:24px 20px; }
+      footer { padding:32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><polygon points="14,2 25,8 25,20 14,26 3,20 3,8" fill="none" stroke="#1D9E75" stroke-width="2"/><polygon points="14,7 21,11 21,19 14,23 7,19 7,11" fill="#1D9E75" opacity="0.3"/></svg>
+      Solva
+    </a>
+    <div class="nav-links">
+      <a href="skills.html">Skills</a>
+      <a href="developer.html">Developer</a>
+      <a href="docs.html" class="active">Docs</a>
+      <a href="https://github.com/raunet234/solva-mcp" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://stellar.expert/explorer/testnet" target="_blank" rel="noopener" class="btn-stellar">View on Stellar</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>Documentation</h1>
+    <p>Complete guide to setting up, configuring, and using Solva MCP for autonomous agent payments on Stellar.</p>
+  </div>
+
+  <div class="docs-layout">
+
+    <!-- Sidebar -->
+    <aside class="docs-sidebar">
+      <div class="sidebar-group">
+        <h4>Getting Started</h4>
+        <a href="#overview" class="active">Overview</a>
+        <a href="#prerequisites">Prerequisites</a>
+        <a href="#installation">Installation</a>
+        <a href="#wallet">Wallet Setup</a>
+      </div>
+      <div class="sidebar-group">
+        <h4>Configuration</h4>
+        <a href="#mcp-config">MCP Config</a>
+        <a href="#policy">Policy Engine</a>
+        <a href="#registry">Service Registry</a>
+      </div>
+      <div class="sidebar-group">
+        <h4>Usage</h4>
+        <a href="#usage">Using Solva</a>
+        <a href="#categories">Categories</a>
+        <a href="#output">Output Format</a>
+      </div>
+      <div class="sidebar-group">
+        <h4>Reference</h4>
+        <a href="#x402">x402 Protocol</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="docs-content">
+
+      <div class="doc-section" id="overview">
+        <h2>Overview</h2>
+        <p>Solva MCP is a Model Context Protocol server that gives AI agents the ability to <strong style="color:var(--text);">discover services</strong>, <strong style="color:var(--text);">evaluate them against policies</strong>, and <strong style="color:var(--text);">pay with real USDC micropayments on Stellar</strong> — all from a single natural language command.</p>
+        <div class="doc-alert">
+          <strong>Built for:</strong> Stellar Hacks: Agents Hackathon 2026<br>
+          <strong>Protocol:</strong> x402 — HTTP 402 micropayments on Stellar<br>
+          <strong>Network:</strong> Stellar Testnet (real on-chain transactions)
+        </div>
+        <h3>How It Works</h3>
+        <ol>
+          <li>User types a task in natural language (e.g. "find latest news about AI")</li>
+          <li>Solva detects the service category from keywords</li>
+          <li>Queries the registry and filters by the agent's spending policy</li>
+          <li>Sends a USDC micropayment on Stellar testnet</li>
+          <li>Returns the service response + verifiable transaction proof</li>
+        </ol>
+      </div>
+
+      <div class="doc-section" id="prerequisites">
+        <h2>Prerequisites</h2>
+        <ul>
+          <li><strong style="color:var(--text);">Node.js 20+</strong> — Required runtime</li>
+          <li><strong style="color:var(--text);">Stellar testnet wallet</strong> — Funded with XLM and USDC</li>
+          <li><strong style="color:var(--text);">Claude Code</strong> (or any MCP-compatible client)</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="installation">
+        <h2>Installation</h2>
+        <div class="code-block">
+          <span class="c-comment"># Clone the repository</span><br>
+          git clone https://github.com/raunet234/solva-mcp.git<br>
+          cd solva-mcp<br><br>
+          <span class="c-comment"># Install dependencies</span><br>
+          npm install<br><br>
+          <span class="c-comment"># Configure environment</span><br>
+          cp .env.example .env<br>
+          <span class="c-comment"># Edit .env and add: STELLAR_SECRET_KEY=S...your_key...</span>
+        </div>
+      </div>
+
+      <div class="doc-section" id="wallet">
+        <h2>Wallet Setup</h2>
+        <h3>1. Get Testnet XLM</h3>
+        <p>Visit <a href="https://laboratory.stellar.org/#account-creator?network=test" target="_blank" style="color:var(--teal);">Stellar Friendbot</a> to fund your wallet with testnet XLM.</p>
+        <h3>2. Get Testnet USDC</h3>
+        <p>Visit <a href="https://faucet.circle.com/" target="_blank" style="color:var(--teal);">Circle Faucet</a>, select Stellar Testnet, and paste your public key.</p>
+        <h3>3. Setup USDC Trustline</h3>
+        <div class="code-block">npx tsx scripts/setup-trustline.ts</div>
+        <div class="doc-alert-warn doc-alert">
+          <strong>Note:</strong> You must establish a USDC trustline before receiving USDC on Stellar. Run the setup script once.
+        </div>
+      </div>
+
+      <div class="doc-section" id="mcp-config">
+        <h2>MCP Configuration</h2>
+        <h3>Claude Code</h3>
+        <div class="code-block">claude mcp add solva npx tsx /absolute/path/to/solva-mcp/src/index.ts -e STELLAR_SECRET_KEY=your_key</div>
+        <h3>Cursor / VS Code / Windsurf</h3>
+        <div class="code-block">
+          <span class="c-punct">{</span><br>
+          &nbsp;&nbsp;<span class="c-str">"mcpServers"</span><span class="c-punct">: {</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"solva"</span><span class="c-punct">: {</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"command"</span><span class="c-punct">: </span><span class="c-str">"npx"</span><span class="c-punct">,</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"args"</span><span class="c-punct">: [</span><span class="c-str">"tsx"</span><span class="c-punct">, </span><span class="c-str">"/path/to/solva-mcp/src/index.ts"</span><span class="c-punct">],</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">"env"</span><span class="c-punct">: { </span><span class="c-str">"STELLAR_SECRET_KEY"</span><span class="c-punct">: </span><span class="c-str">"S..."</span><span class="c-punct"> }</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-punct">}</span><br>
+          &nbsp;&nbsp;<span class="c-punct">}</span><br>
+          <span class="c-punct">}</span>
+        </div>
+      </div>
+
+      <div class="doc-section" id="policy">
+        <h2>Policy Engine</h2>
+        <p>The policy engine controls how your agent spends money. Edit <code>policy.json</code>:</p>
+        <div class="code-block">
+          <span class="c-punct">{</span><br>
+          &nbsp;&nbsp;<span class="c-str">"maxPriceUSDC"</span><span class="c-punct">: </span><span class="c-num">0.005</span><span class="c-punct">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// Max per request</span><br>
+          &nbsp;&nbsp;<span class="c-str">"minUptimePct"</span><span class="c-punct">: </span><span class="c-num">97.0</span><span class="c-punct">,</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// Min uptime %</span><br>
+          &nbsp;&nbsp;<span class="c-str">"minTotalPayments"</span><span class="c-punct">: </span><span class="c-num">100</span><span class="c-punct">,</span>&nbsp;&nbsp;&nbsp;<span class="c-comment">// Min payment history</span><br>
+          &nbsp;&nbsp;<span class="c-str">"dailyBudgetUSDC"</span><span class="c-punct">: </span><span class="c-num">2.0</span><span class="c-punct">,</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// Daily spending limit</span><br>
+          &nbsp;&nbsp;<span class="c-str">"allowExplorer"</span><span class="c-punct">: </span><span class="c-key">false</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-comment">// Show tx links?</span><br>
+          <span class="c-punct">}</span>
+        </div>
+      </div>
+
+      <div class="doc-section" id="registry">
+        <h2>Service Registry</h2>
+        <p>The registry contains all available services in the Solva marketplace.</p>
+        <table class="doc-table">
+          <thead>
+            <tr><th>Service</th><th>Category</th><th>Price</th><th>Uptime</th><th>Payments</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>XLM News Wire</td><td>📰 news</td><td>$0.002</td><td>99.2%</td><td>1,400</td><td class="pass">✓ Pass</td></tr>
+            <tr><td>DeepQuery Search</td><td>🔎 search</td><td>$0.003</td><td>98.5%</td><td>750</td><td class="pass">✓ Pass</td></tr>
+            <tr><td>Brevity Summarizer</td><td>📝 summarize</td><td>$0.001</td><td>97.8%</td><td>180</td><td class="pass">✓ Pass</td></tr>
+            <tr><td>SkyVault Weather</td><td>🌤️ weather</td><td>$0.004</td><td>95.5%</td><td>45</td><td class="fail">✗ Fail</td></tr>
+          </tbody>
+        </table>
+        <div class="doc-alert-warn doc-alert">
+          <strong>Why does SkyVault fail?</strong> Uptime 95.5% is below the 97% minimum, and 45 payments is below the 100 minimum. This demonstrates policy-based agent protection.
+        </div>
+      </div>
+
+      <div class="doc-section" id="usage">
+        <h2>Using Solva</h2>
+        <p>Simply type a task in natural language. Solva handles the rest.</p>
+        <div class="code-block">
+          <span class="c-comment"># In Claude Code</span><br>
+          > Call solva tool: find latest news about AI<br>
+          > Call solva tool: summarize blockchain payment trends<br>
+          > Call solva tool: research x402 protocol
+        </div>
+      </div>
+
+      <div class="doc-section" id="categories">
+        <h2>Supported Categories</h2>
+        <table class="doc-table">
+          <thead><tr><th>Category</th><th>Keywords</th></tr></thead>
+          <tbody>
+            <tr><td>📰 news</td><td>news, article, latest, headline</td></tr>
+            <tr><td>🔎 search</td><td>search, find, research, look up</td></tr>
+            <tr><td>📝 summarize</td><td>summarize, summary, tldr, brief</td></tr>
+            <tr><td>🌤️ weather</td><td>weather, temperature, forecast, rain</td></tr>
+          </tbody>
+        </table>
+        <p>Tasks that don't match any keyword default to <code>search</code>.</p>
+      </div>
+
+      <div class="doc-section" id="output">
+        <h2>Output Format</h2>
+        <p>Every response includes full payment transparency:</p>
+        <div class="code-block">
+          ✓ Task: find latest news about AI<br>
+          ✓ Category: news<br>
+          ✓ Service: XLM News Wire<br>
+          ✓ Price: $0.002 USDC<br>
+          ✓ Transaction: 7c2ef38eff2ac7...<br>
+          ✓ Explorer: https://stellar.expert/...<br><br>
+          Top stories:<br>
+          1. "Stellar Network Hits 10M Daily Transactions"<br>
+          2. "x402 Protocol Sees 300% Growth"<br>
+          3. "Soroban Smart Contracts Power 40% of DeFi"
+        </div>
+      </div>
+
+      <div class="doc-section" id="x402">
+        <h2>x402 Protocol</h2>
+        <p>The <a href="https://x402.org" target="_blank" style="color:var(--teal);">x402 protocol</a> enables machine-to-machine micropayments using HTTP 402:</p>
+        <ol>
+          <li>Agent sends <code>GET /api/data</code> to a service</li>
+          <li>Service responds <code>402 Payment Required</code> with price and address</li>
+          <li>Agent signs and submits a USDC payment on Stellar</li>
+          <li>Agent retries the request with payment proof in headers</li>
+          <li>Service responds <code>200 OK</code> with data</li>
+        </ol>
+        <div class="doc-alert">
+          <strong>Key benefits:</strong> No API keys needed (payment IS auth), no subscriptions (pay per request), instant settlement (3-5s on Stellar), on-chain proof for every transaction.
+        </div>
+      </div>
+
+      <div class="doc-section" id="roadmap">
+        <h2>Roadmap</h2>
+        <h3>Phase 1: Discovery & Payment ✅</h3>
+        <ul>
+          <li>Natural language category detection</li>
+          <li>Policy-based service filtering</li>
+          <li>Real USDC micropayments on Stellar testnet</li>
+        </ul>
+        <h3>Phase 2: Service Listing</h3>
+        <ul>
+          <li><code>solva_list_service</code> tool for providers</li>
+          <li>Automated endpoint validation</li>
+          <li>Dynamic registry updates</li>
+        </ul>
+        <h3>Phase 3: Platform Economics</h3>
+        <ul>
+          <li>Smart contract for payment splitting</li>
+          <li>Daily budget tracking</li>
+          <li>Mainnet deployment</li>
+        </ul>
+        <h3>Phase 4: Open Marketplace</h3>
+        <ul>
+          <li>Decentralized registry on Soroban</li>
+          <li>Provider dashboard & analytics</li>
+          <li>Cross-chain support</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Solva MCP · Built for Stellar Hacks: Agents Hackathon 2026</p>
+    <p>by Rauneet Raj · Open source under MIT</p>
+    <p style="margin-top:8px;"><a href="https://github.com/raunet234/solva-mcp" target="_blank" rel="noopener">GitHub →</a></p>
+  </footer>
+
+  <script>
+    // Highlight active sidebar link on scroll
+    const sections = document.querySelectorAll('.doc-section');
+    const sidebarLinks = document.querySelectorAll('.docs-sidebar a');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sidebarLinks.forEach(a => a.classList.remove('active'));
+          const active = document.querySelector(`.docs-sidebar a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
